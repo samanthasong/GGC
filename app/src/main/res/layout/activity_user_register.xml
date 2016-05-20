@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.ktpoc.tvcomm.consulting.UserRegisterActivity">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="GiGA Genie Consulting 서비스 가입하기"
+        android:id="@+id/register_title_textview"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="35dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:text="이름을 입력하세요"
+        android:ems="10"
+        android:id="@+id/name_edit_text"
+        android:layout_below="@+id/register_title_textview"
+        android:layout_alignStart="@+id/phone_edit_text" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:ems="10"
+        android:id="@+id/phone_edit_text"
+        android:text="전화번호를 입력하세요"
+        android:layout_below="@+id/name_edit_text"
+        android:layout_centerHorizontal="true" />
+
+
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/phone_edit_text"
+        android:layout_alignParentTop="false"
+        android:id="@+id/device_radio_group"
+        android:layout_alignBottom="@+id/phone_radio_btn"
+        android:layout_alignStart="@+id/register_title_textview"
+        android:layout_alignEnd="@+id/register_title_textview"
+        android:layout_marginTop="5dp">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:text="GiGA Genie Box"
+            android:id="@+id/genie_radio_btn"
+            android:inputType="text"
+            android:layout_below="@+id/name_edit_text"
+            android:layout_alignStart="@+id/register_title_textview"
+            android:checked="true"
+            android:layout_gravity="center_horizontal" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:text="Else Device"
+            android:id="@+id/phone_radio_btn"
+            android:inputType="text"
+            android:layout_below="@+id/phone_edit_text"
+            android:layout_alignEnd="@+id/register_title_textview"
+            android:layout_gravity="center_horizontal" />
+
+    </RadioGroup>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="가입하기"
+        android:id="@+id/register_button"
+        android:layout_below="@+id/device_radio_group"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:onClick="onClickRegister"/>
+
+    <ProgressBar
+        android:id="@+id/loading_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_centerVertical="true"
+        android:layout_alignStart="@+id/register_button" />
+
+</RelativeLayout>

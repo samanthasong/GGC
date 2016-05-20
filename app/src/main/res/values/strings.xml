@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Consulting</string>
+    <string name="service_name">Service Name Counsulting</string>
+    <string name="title_activity_consulting_pop_up">ConsultingPopUpActivity</string>
+    <string name="user_service_name">User Service Name</string>
+    <string name="confirm_string">확인</string>
+    <string name="cancel_string">취소</string>
+    <string name="push_title">GiGA Genie 컨설팅 푸시 알람</string>
+    <string name="consulting_server_url">https://amuzlab.iptime.org:3000/</string>
+    <string name="imei">TC_BOX_2_20160516</string>
+    <string name="consulting_popup_message">컨설팅 진행하시겟나이까</string>
+</resources>
