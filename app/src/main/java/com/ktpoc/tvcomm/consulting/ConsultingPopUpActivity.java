@@ -5,12 +5,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 
 public class ConsultingPopUpActivity extends Activity {
 
     private PopupDialog mPopupDlg;
     private String mMessage;
+    private String _TAG = "[POPUP]";
+    private boolean isConfirmBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,62 +21,128 @@ public class ConsultingPopUpActivity extends Activity {
         ViewManager.getInstance().addActivity(this);
         ViewManager.getInstance().printActivityListSofar();
 
-
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
             mMessage = extra.getString("message");
             mPopupDlg = new PopupDialog(this,
                     "GiGA Genie 컨설팅 서비스",
-                    "컨설팅 연결 요청이 왔습니다 연결하시겠습니까?",
+                    "컨설팅 연결 요청이 왔습니다. 수락하시겠어요? "+mMessage,
                     leftClickListener,
                     rightClickListener);
             mPopupDlg.show();
+            isConfirmBtn = true;
         }
-
     }
-
-
 
     View.OnClickListener leftClickListener = new View.OnClickListener() {
         @Override
-        public void onClick(View v) {
+        public void onClick(View v) { //confirm
 
             mPopupDlg.dismiss();
-            Intent i = new Intent(ConsultingPopUpActivity.this, ScreenShareActivity.class);
-            i.putExtra("message", mMessage);
-            Log.d("[POPUP]", "message is " + mMessage);
-            ConsultingPopUpActivity.this.finish();
-            startActivity(i);
 
+            //1. calling GiGA Conference Application TO CONNECT
+            Intent intent_to_gcf = new Intent(IntentAction.REQ_CONFERENCE_START_FROM_CONSULTING);
+            sendBroadcast(intent_to_gcf);
+
+            //TODO: MC한테 상태 정보 업데이트
+            Intent intent_to_mc = new Intent(IntentAction.SEND_NOTI_FROM_CONSULTING);
+            intent_to_mc.putExtra("consultingState", "connected");
+            sendBroadcast(intent_to_mc);
+
+            //2. this app execute CONNECTION
+//            Intent i = new Intent(ConsultingPopUpActivity.this, ScreenShareActivity.class);
+//            i.putExtra("message", mMessage);
+//            startActivity(i);
+//            Log.d(_TAG, "message is " + mMessage);
+
+            //ConsultingPopUpActivity.this.finish();
+            ViewManager.getInstance().removeActivity(ConsultingPopUpActivity.this);
         }
     };
 
     View.OnClickListener rightClickListener = new View.OnClickListener() {
         @Override
-        public void onClick(View v) {
+        public void onClick(View v) { //cancellation
             mPopupDlg.dismiss();
+
 //            ConsultingPopUpActivity.this.finish();
-//            ViewManager.getInstance().removeActivity(ConsultingPopUpActivity.this);
+            ViewManager.getInstance().removeActivity(ConsultingPopUpActivity.this);
         }
     };
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        switch (keyCode){
+            case KeyEvent.KEYCODE_DPAD_CENTER:  // 확인 키
+                if(isConfirmBtn) { // leftButtonEventListener = OK
+                    mPopupDlg.dismiss();
+
+                    //1. calling GiGA Conference Application TO CONNECT
+                    Intent intent_to_gcf = new Intent(IntentAction.REQ_CONFERENCE_START_FROM_CONSULTING);
+                    sendBroadcast(intent_to_gcf);
+
+                    //TODO: MC한테 상태 정보 업데이트
+                    Intent intent_to_mc = new Intent(IntentAction.SEND_NOTI_FROM_CONSULTING);
+                    intent_to_mc.putExtra("consultingState", "connected");
+                    sendBroadcast(intent_to_mc);
+
+                   // ConsultingPopUpActivity.this.finish();
+                    ViewManager.getInstance().removeActivity(ConsultingPopUpActivity.this);
+
+                }else { // rightButtonEventListener = CANCEL
+                    mPopupDlg.dismiss();
+
+                //    ConsultingPopUpActivity.this.finish();
+                    ViewManager.getInstance().removeActivity(ConsultingPopUpActivity.this);
+                }
+                break;
+            case KeyEvent.KEYCODE_DPAD_RIGHT: // 오른쪽 키
+
+                if(isConfirmBtn == true){
+                    isConfirmBtn = false;
+                }else{
+                    isConfirmBtn = true;
+                }
+                break;
+
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+                if(isConfirmBtn == true){
+                    isConfirmBtn = false;
+                }else{
+                    isConfirmBtn = true;
+                }
+                break;
+            case KeyEvent.KEYCODE_F1:
+                mPopupDlg.dismiss();
+
+              //  ConsultingPopUpActivity.this.finish();
+                ViewManager.getInstance().removeActivity(ConsultingPopUpActivity.this);
+            default:
+                break;
+        }
+        return false;
+    }
+
+
 
     @Override
     protected void onPause(){
         super.onPause();
-//        this.finish(); //안먹힘
-//        ViewManager.getInstance().removeActivity(ConsultingPopUpActivity.this);
+        Log.d(_TAG, "onPause()");
     }
 
     @Override
     protected void onStop(){
         super.onStop();
-        this.finish(); //안먹힘
-        ViewManager.getInstance().removeActivity(ConsultingPopUpActivity.this);
+
+        Log.d(_TAG, "onStop()");
     }
 
     @Override
     protected void onDestroy(){
         super.onDestroy();
+        Log.d(_TAG, "onDestroy()");
     }
 
 

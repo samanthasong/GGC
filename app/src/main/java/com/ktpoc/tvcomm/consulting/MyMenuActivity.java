@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.webkit.WebView;
 import android.widget.Toast;
 
@@ -13,16 +15,22 @@ public class MyMenuActivity extends Activity {
     private final String _TAG = "[SCHEDULE ACTIVITY]";
     ConsultingClient client;
 
-    private final String _url = "https://tvcomm.dlinkddns.com:3000/users/expert_category_22?roomId=hlsid6xgjz";
+    private String _url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         ViewManager.getInstance().addActivity(this);
+        ViewManager.getInstance().printActivityListSofar();
 
-        //setContentView(R.layout.activity_webview);
-       // mWebView = (WebView)findViewById(R.id.web_view);
+        setContentView(R.layout.activity_webview);
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            _url = extras.getString("message");
+            client = new ConsultingClient(_url);
+        }
+        mWebView = (WebView)findViewById(R.id.web_view);
     }
 
     @Override
@@ -30,19 +38,20 @@ public class MyMenuActivity extends Activity {
         super.onResume();
         Toast toast = Toast.makeText(this, _TAG, Toast.LENGTH_SHORT);
         toast.show();
-//        Bundle extras = getIntent().getExtras();
-//        if(extras != null){
-//
-//        }
-//        client = new ConsultingClient(_url);
-//        client.setWebviewSettings(mWebView);
-        Intent i = new Intent(Intent.ACTION_VIEW);
-        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        i.setPackage("com.android.chrome");
-        i.setData(Uri.parse(_url));
+    }
 
-        startActivity(i);
-        String currentUserInput = null;
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        switch (keyCode){
+            case KeyEvent.KEYCODE_BACK:
+                //this.finish();
+                ViewManager.getInstance().removeActivity(MyMenuActivity.this);
+                Log.d(_TAG, "BACK KEY PRESSED");
 
+                break;
+            default:
+                break;
+        }
+        return false;
     }
 }

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Push-Notification-Client-e9987b02c15c0b31010ab82dfb554124e09791aa.iml" filepath="$PROJECT_DIR$/Push-Notification-Client-e9987b02c15c0b31010ab82dfb554124e09791aa.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CONSULTING_BACK.iml" filepath="$PROJECT_DIR$/CONSULTING_BACK.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

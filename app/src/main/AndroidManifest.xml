@@ -5,7 +5,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <!-- Crash analyzer 0603, lee -->
+    <uses-permission android:name="android.permission.READ_LOGS"/>
 
     <uses-feature
         android:name="android.hardware.camera2"
@@ -59,7 +62,9 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
+        android:hardwareAccelerated="true"
+        android:theme="@style/AppTheme"
+        android:name=".CReport">
         <service
             android:name="com.ktpns.lib.service.PushClientService"
             android:enabled="true"
@@ -79,10 +84,12 @@
 
         <activity
             android:name=".MainActivity"
-            android:theme="@android:style/Theme.NoDisplay" >
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+        <!--<activity-->
+            <!--android:name=".MainActivity"-->
+            <!--android:theme="@android:style/Theme.NoDisplay" >-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -98,9 +105,6 @@
             android:name=".UserRegisterActivity"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
         <activity
-            android:name=".HomeActivity"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
-        <activity
             android:name=".ExpertsViewActivity"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
         <activity
@@ -109,6 +113,8 @@
         <activity
             android:name=".MyMenuActivity"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+        <activity android:name=".ScreenShareActivity"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
         <!-- <activity -->
         <!-- android:name="com.ktpns.lib.popup.PopupActivity" -->
         <!-- android:theme="@style/Theme.AppCompat.Light.Dialog.Alert" /> -->
@@ -167,13 +173,6 @@
                 <action android:name="android.intent.action.DATE_CHANGED" />
             </intent-filter>
         </receiver>
-        <!--
-             ATTENTION: This was auto-generated to add Google Play services to your project for
-             App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
-        -->
-        <!-- <meta-data -->
-        <!-- android:name="com.google.android.gms.version" -->
-        <!-- android:value="@integer/google_play_services_version" /> -->
 
         <receiver
             android:name=".ConsultingReceiver"
@@ -185,6 +184,7 @@
                 <action android:name="com.ktpoc.tvcomm.consulting.menu" />
                 <action android:name="com.ktpoc.tvcomm.consulting.schedule" />
                 <action android:name="com.ktpoc.tvcomm.consulting.stop" />
+                <action android:name="com.ktpoc.tvcomm.finish.consult" />
                 <action android:name="com.ktpoc.tvcomm.service.check" />
                 <action android:name="com.insun.send.msg.songsong" />
 
@@ -193,8 +193,7 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ScreenShareActivity" >
-        </activity>
+
     </application>
 
 </manifest>

@@ -2,10 +2,14 @@ package com.ktpoc.tvcomm.consulting;
 
 import android.net.http.SslError;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.webkit.JavascriptInterface;
 import android.webkit.PermissionRequest;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -14,7 +18,7 @@ import android.webkit.WebViewClient;
  */
 public class ConsultingClient {
     private final String _TAG = "[WEBVIEW]";
-    private final String THIS_ANDROID_APP = "[CONSULTING ANDROID]";
+    private final String THIS_ANDROID_APP = "ConsultingAndroid";
 
     private String mUrl;
 
@@ -22,7 +26,7 @@ public class ConsultingClient {
         mUrl = url;
 
     }
-    public void setWebviewSettings(WebView webview){
+    public void setWebviewSettings(final WebView webview){
 
         webview.loadUrl(mUrl);
         webview.setWebChromeClient(new WebChromeClient() {
@@ -38,8 +42,6 @@ public class ConsultingClient {
 
             }
 
-
-//
 //            @Override
 //            public void onPermissionRequest(final PermissionRequest request) {
 //                runOnUiThread(new Runnable() {
@@ -59,25 +61,31 @@ public class ConsultingClient {
                 handler.proceed();
             }
         });
+
+
 //        webview.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         webview.getSettings().setJavaScriptEnabled(true);
         webview.getSettings().setMediaPlaybackRequiresUserGesture(false);
         webview.setWebContentsDebuggingEnabled(true);
-        webview.addJavascriptInterface(new AndroidBridge(), THIS_ANDROID_APP);
+
+
+        /* for more outstanding performance kkkkkkkkk*/
+        webview.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+
         Log.d(_TAG, "CHROME VERSION : " + webview.getSettings().getUserAgentString());
     }
+//
+//    public void bridgeAndroid(ScreenShareActivity.Bridge androidBridge, WebView webView){
+//        webView.addJavascriptInterface(androidBridge, THIS_ANDROID_APP);
+//    }
 
-    public String refactorUrl(Bundle extra){
 
 
-        return mUrl;
+//    public void bridgeUserEventToJS(String userInput, WebView wv) {
+//        userInput = "USER EVENT IS : Pointing 2nd Div object";
+//        wv.loadUrl("javascript:onReceiveFromAndroid('USER EVENT SENDING...");
+//    }
 
-    }
-
-    public void bridgeUserEventToJS(String userInput, WebView wv) {
-        userInput = "USER EVENT IS : Pointing 2nd Div object";
-        wv.loadUrl("javascript:onReceiveFromAndroid('USER EVENT SENDING...");
-    }
 
 }

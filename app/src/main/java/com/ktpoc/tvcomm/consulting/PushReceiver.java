@@ -26,13 +26,9 @@ public class PushReceiver extends BroadcastReceiver{
                 String error = intent.getStringExtra("error");
                 String tokenStr = new String(token, "UTF-8");
                 Log.d(_TAG, "PUSH REGISTRATION Token STR is  --> " + tokenStr + ", error -->" + error);
-                /* test용 --> message receive 시 전달해야하마 2016.04.25 song*/
-                //Intent i = new Intent(context, com.ktpoc.tvcomm.consulting.ConsultingPopUpActivity.class);
-                //i.putExtra("receivedMsg", "hello this is push message");
-//                i.setFlags(intent.FLAG_ACTIVITY_NEW_TASK);
 
 
-                Intent i = new Intent("com.ktpoc.tvcomm.consulting.send.token");
+                Intent i = new Intent(IntentAction.PASS_TOKEN_FROM_CONSULTING); //receive it in
                 i.addCategory(Intent.CATEGORY_DEFAULT);
                 i.putExtra("token", tokenStr);
                 context.sendBroadcast(i);
@@ -90,17 +86,40 @@ public class PushReceiver extends BroadcastReceiver{
                         break;
                     case 1:
                         Log.d(_TAG, "receive.MESSAGE type --> General Push Message");
-                        //TODO: pass it to pop up activity
-//                        Intent i = new Intent(context, com.ktpoc.tvcomm.consulting.ConsultingPopUpActivity.class);
-//                        i.putExtra("message", strMsg); //it would be URL
-//                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                        context.startActivity(i);
-                        String msg = strMsg.substring(14);
-                        Intent i = new Intent(context, ConsultingPopUpActivity.class);
-                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        i.putExtra("message", msg);
+
+                        String msg = strMsg;
+
+                        if(msg.contains("action_client")){ // Expert finishes consulting then notify it via PUSH MSG
+                            String closeAction = strMsg.substring(19);
+                            Log.d(_TAG, "Action client message is -> "+ closeAction);
+
+                            if(closeAction.equals("close")){
+                                // close the screen Activity
+                                Log.d(_TAG, "Action client message is -> ");
+                                Intent i = new Intent("com.ktpoc.tvcomm.consulting.send.session.off");
+                                i.addCategory(Intent.CATEGORY_DEFAULT);
+                                context.sendBroadcast(i);
+
+                            }else{
+                                //do nothing
+                            }
+                        }else if(msg.contains("room_url")){ // Expert starts consulting and notify it via PUSH MSG
+                            String url = strMsg.substring(14);
+                            //check if it is redundant push message (KPNS)
+                            boolean underConsulting = ViewManager.getInstance().isActivityAlive(ScreenShareActivity.class);
+                            Log.d(_TAG, "IS CONSULTING UNDER GOING? --> "+ underConsulting);
+                            if(underConsulting == false){
+                                Intent i = new Intent(context, ConsultingPopUpActivity.class);
+                                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                i.putExtra("message", url);
+                                context.startActivity(i);
+                            }else{
+                                //do nothing
+                            }
+
+                        }
                         Log.d(_TAG, "receive.MESSAGE is " + msg);
-                        context.startActivity(i);
+
                         break;
                     default:
                         Log.d(_TAG, "receive.MESSAGE type --> UNKNOWN");
@@ -112,7 +131,7 @@ public class PushReceiver extends BroadcastReceiver{
                     intent.putExtra("transactionId", transactionId);
                     context.sendBroadcast(intent);
                 }
-            }catch (Exception e){
+            }catch (Exception e) {
                 e.printStackTrace();
             }
         } else if ("com.ktpns.pa.receive.MESSAGE".equals(action)){ //version 1.x

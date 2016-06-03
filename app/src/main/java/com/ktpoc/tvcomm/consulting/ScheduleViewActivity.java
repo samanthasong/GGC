@@ -2,6 +2,8 @@ package com.ktpoc.tvcomm.consulting;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.webkit.WebView;
 import android.widget.Toast;
 
@@ -18,20 +20,31 @@ public class ScheduleViewActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
         mWebView = (WebView)findViewById(R.id.web_view);
+        client = new ConsultingClient(_url);
+        client.setWebviewSettings(mWebView);
     }
 
     @Override
     protected void onResume(){
         super.onResume();
         Toast toast = Toast.makeText(this, _TAG, Toast.LENGTH_SHORT);
-//        Bundle extras = getIntent().getExtras();
-//        if(extras != null){
-//
-//        }
-        client = new ConsultingClient(_url);
-        client.setWebviewSettings(mWebView);
-        String currentUserInput = null;
+        toast.show();
 
+        String currentUserInput = null;
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        switch (keyCode){
+            case KeyEvent.KEYCODE_BACK:
+               // this.finish();
+                ViewManager.getInstance().removeActivity(ScheduleViewActivity.this);
+                Log.d(_TAG, "BACK KEY PRESSED");
+
+                break;
+            default:
+                break;
+        }
+        return false;
+    }
 }

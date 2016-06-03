@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -54,7 +55,7 @@ public class UserRegisterActivity extends Activity {
         mGenieRadioBtn = (RadioButton)findViewById(R.id.genie_radio_btn);
         mPhoneRadioBtn = (RadioButton)findViewById(R.id.phone_radio_btn);
 
-        m_server_url = getResources().getString(R.string.consulting_server_url);
+        m_server_url = getResources().getString(R.string.consulting_api_url);
         mHttpsClient = new AndroidHttp(m_server_url);
         mProperties = new Properties();
         //mRegistrationId = getResources().getString(R.string.imei);
@@ -75,18 +76,17 @@ public class UserRegisterActivity extends Activity {
     @Override
     protected void onStart(){
         super.onStart();
-        mPhoneEditTxt.setText("0103330132");
-        mNameEditTxt.setText("insami");
+        mPhoneEditTxt.setText("01032490813");
+        mNameEditTxt.setText("홍길동");
     }
     @Override
     protected void onResume(){
 
         super.onResume();
-        Log.d(_TAG, "onResume called");
+        Log.d(_TAG, "onResume()");
         if(tokenStr == ""){
             //registerToKPNS();
         }
-
     }
 
     public void onClickRegister(View v) {
@@ -117,9 +117,13 @@ public class UserRegisterActivity extends Activity {
             Log.d(_TAG, "deviceInsert result is --> " + result);
             switch (result) {
                 case "true":
-                    Toast toast = Toast.makeText(this, "REGISTER TO CMS SUCCEED", Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(this, "서비스 가입에 성공하였습니다", Toast.LENGTH_SHORT);
                     toast.show();
                     progressBar.setVisibility(View.INVISIBLE);
+
+                    //UserRegisterActivity.this.finish();
+                    ViewManager.getInstance().removeActivity(UserRegisterActivity.this);
+
                     break;
                 case "false":
                     progressBar.setVisibility(View.INVISIBLE);
@@ -130,19 +134,40 @@ public class UserRegisterActivity extends Activity {
 
         }
     }
-
+//
+//    @Override
+//    public boolean onKeyDown(int keycode, KeyEvent event){
+//        if(event.getAction() == KeyEvent.ACTION_DOWN){
+//            switch (keycode){
+//                case KeyEvent.KEYCODE_BACK:
+//                    break;
+//                case KeyEvent.KEYCODE_F1:
+//                    break;
+//
+//            }
+//
+//        }
+//        //return super.onKeyDown(keycode, event);
+//        return true;
+//    }
 
 
     @Override
     protected void onPause(){
         super.onPause();
+        Log.d(_TAG, "onPause()");
 
     }
 
     @Override
+    protected void onStop(){
+        super.onStop();
+        Log.d(_TAG, "onStop()");
+
+    }
+    @Override
     protected void onDestroy(){
-
-
         super.onDestroy();
+        Log.d(_TAG, "onDestroy()");
     }
 }
