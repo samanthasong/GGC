@@ -6,8 +6,8 @@
     <string name="confirm_string">확인</string>
     <string name="cancel_string">취소</string>
     <string name="push_title">GiGA Genie 컨설팅 푸시 알람</string>
-    <string name="consulting_server_url">https://192.168.0.163:3001/</string>
+    <string name="consulting_server_url">https://121.135.146.55:3001/</string>
     <string name="imei">TC_BOX_2_20160516</string>
     <string name="consulting_popup_message">컨설팅 진행하시겟나이까</string>
-    <string name="consulting_api_url">https://192.168.0.163:3001/</string>
+    <string name="consulting_api_url">https://121.135.146.55:3001/</string>
 </resources>

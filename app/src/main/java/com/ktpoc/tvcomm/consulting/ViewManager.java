@@ -25,7 +25,6 @@ public class ViewManager extends Application{
     private String mRoomId;
     private String mHome;
     private String _TAG = "[VIEW MANAGER]";
-    private Context context;
 
     public static synchronized ViewManager getInstance() {
         if(actListInstance == null)
@@ -49,22 +48,10 @@ public class ViewManager extends Application{
 
     public void removeActivity(Activity activity){
         Log.d(_TAG, "remove this [ " + mIdx +" ] activity" +activity.getClass().getName().toString());
-        if( (mIdx - 1) < 0){
-            Log.d(_TAG, "앱이 종료되어야 함");
-            activity.finish();
-            this.mArrayList.remove(activity);
-            activity.moveTaskToBack(true);
-            Toast toast = Toast.makeText(activity.getApplicationContext(), "컨설팅 서비스를 종료합니다", Toast.LENGTH_LONG);
-            toast.show();
-            Intent i = new Intent(IntentAction.SEND_NOTI_FROM_CONSULTING);
-            i.putExtra("consultingState", "exit");
-            Log.d(_TAG, "send broadcast exit extra to M.C");
-            sendBroadcast(i);
-        }else{
-            activity.finish();
-            this.mArrayList.remove(activity);
-            mIdx--;
-        }
+
+        activity.finish();
+        this.mArrayList.remove(activity);
+        mIdx--;
     }
 
 
@@ -73,11 +60,11 @@ public class ViewManager extends Application{
             mArrayList.get(i).moveTaskToBack(true);
             mArrayList.get(i).finish();
             mArrayList.remove(mArrayList.get(i));
-
-            Intent intent = new Intent("com.ktpoc.tvcomm.consulting.noti");
-            intent.putExtra("consultingState", "exit");
-            Log.d(_TAG, "send broadcast exit extra to M.C");
-            sendBroadcast(intent);
+//
+//            Intent intent = new Intent("com.ktpoc.tvcomm.consulting.noti");
+//            intent.putExtra("consultingState", "exit");
+//            Log.d(_TAG, "send broadcast exit extra to M.C");
+//            sendBroadcast(intent);
         }
         mIdx = -1;
     }

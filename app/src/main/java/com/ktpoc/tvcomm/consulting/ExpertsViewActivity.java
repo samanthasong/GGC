@@ -1,6 +1,7 @@
 package com.ktpoc.tvcomm.consulting;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -52,6 +53,10 @@ public class ExpertsViewActivity extends Activity {
                     DialogBuilder builder = new DialogBuilder();
                     if(builder.exitAppDialog(ExpertsViewActivity.this) == true){
                         ViewManager.getInstance().removeAndFinishAllActivity();
+                        Intent i = new Intent(IntentAction.SEND_NOTI_FROM_CONSULTING);
+                        i.putExtra("consultingState", "exit");
+                        Log.d(_TAG, "send broadcast exit extra to M.C");
+                        sendBroadcast(i);
                         Log.d(_TAG, "exit key code received");
                     }
                 }
@@ -85,10 +90,34 @@ public class ExpertsViewActivity extends Activity {
         super.onDestroy();
     }
 
+    private void checkFinalPage(){
+        int currentActivityIdx = ViewManager.getInstance().getCurrentActivityIdx();
+
+        if(currentActivityIdx == 0){
+
+            Log.d(_TAG, "앱이 종료되어야 함");
+            Toast toast = Toast.makeText(this, "컨설팅 서비스를 종료합니다", Toast.LENGTH_LONG);
+            toast.show();
+
+            moveTaskToBack(true);
+
+            Intent i = new Intent(IntentAction.SEND_NOTI_FROM_CONSULTING);
+            i.putExtra("consultingState", "exit");
+            Log.d(_TAG, "send broadcast exit extra to M.C");
+            sendBroadcast(i);
+
+        }else if(currentActivityIdx > 0){
+            //nothing to do
+        }else{
+            Log.d(_TAG, "current index is ackward : "+currentActivityIdx);
+        }
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event){
         switch (keyCode){
             case KeyEvent.KEYCODE_BACK:
+                checkFinalPage();
                 ViewManager.getInstance().removeActivity(ExpertsViewActivity.this);
                 Log.d(_TAG, "BACK KEY PRESSED");
 
@@ -97,7 +126,10 @@ public class ExpertsViewActivity extends Activity {
                 DialogBuilder builder = new DialogBuilder();
                 if( builder.exitAppDialog(this) ){
                     ViewManager.getInstance().removeAndFinishAllActivity();
-
+                    Intent i = new Intent(IntentAction.SEND_NOTI_FROM_CONSULTING);
+                    i.putExtra("consultingState", "exit");
+                    Log.d(_TAG, "send broadcast exit extra to M.C");
+                    sendBroadcast(i);
                 }else{
                     //do nothing
                 }

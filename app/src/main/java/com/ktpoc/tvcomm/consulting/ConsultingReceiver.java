@@ -83,22 +83,22 @@ public class ConsultingReceiver extends BroadcastReceiver {
                 String  actId = intent.getStringExtra("actId");
                 Log.d(_TAG, "menu 명령 income with " + actId);
                 if(actId.contains("502")){ // back key event
+                    int curIdx = ViewManager.getInstance().getCurrentActivityIdx();
+                    Activity curActivity = ViewManager.getInstance().getActivity(curIdx);
+                    if(curIdx == 0){
+
+                        Log.d(_TAG, "App 종료 되어야 함");
+                        Toast toast = Toast.makeText(context, "컨설팅 서비스를 종료합니다", Toast.LENGTH_LONG);
+                        toast.show();
+                        curActivity.moveTaskToBack(true);
+
+                        Intent i = new Intent(IntentAction.SEND_NOTI_FROM_CONSULTING);
+                        i.putExtra("consultingState", "exit");
+                        Log.d(_TAG, "send broadcast exit extra to M.C");
+                        context.sendBroadcast(i);
+                    }
                     ViewManager.getInstance().removeActivity(ViewManager.getInstance().getCurrentActivity());
-//                    int curIndex = ViewManager.getInstance().getCurrentActivityIdx();
-//                    if (curIndex == 0 ){
 //
-//                        //TODO: 종료 합니다 && noti to MC
-////                        Toast toast = Toast.makeText(context, "컨설팅 서비스를 종료합니다", Toast.LENGTH_LONG);
-////                        toast.show();
-//                        ViewManager.getInstance().removeActivity(ViewManager.getInstance().getActivity(curIndex), ViewManager.getInstance().getActivity(curIndex).this);
-//
-//                        Log.d(_TAG, "send broadcast to M.C from finish");
-//
-//                    }else {
-//                        Activity currentActivity = ViewManager.getInstance().getCurrentActivity();
-//                        ViewManager.getInstance().removeActivity(currentActivity, currentActivity.this);
-//                        currentActivity.finish();
-//                    }
 
                 }else if (actId == "504"){ //mymenu
 
@@ -137,7 +137,7 @@ public class ConsultingReceiver extends BroadcastReceiver {
             try {
                 //service로 가든 main activity 로 가든..
                 //TODO: destroy consulting app
-                Intent i = new Intent("com.ktpoc.tvcomm.consulting.noti");
+                Intent i = new Intent(IntentAction.SEND_NOTI_FROM_CONSULTING);
                 i.putExtra("consultingState", "exit");
                 context.sendBroadcast(i);
                 Log.d(_TAG, "send broadcast to M.C from stop");
@@ -195,4 +195,5 @@ public class ConsultingReceiver extends BroadcastReceiver {
         }
         return isRunning;
     }
+
 }

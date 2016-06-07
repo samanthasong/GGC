@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutCompat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Toast;
 
 public class ConsultingPopUpActivity extends Activity {
 
@@ -56,7 +57,9 @@ public class ConsultingPopUpActivity extends Activity {
 //            Log.d(_TAG, "message is " + mMessage);
 
             //ConsultingPopUpActivity.this.finish();
+            checkFinalPage();
             ViewManager.getInstance().removeActivity(ConsultingPopUpActivity.this);
+
         }
     };
 
@@ -66,10 +69,33 @@ public class ConsultingPopUpActivity extends Activity {
             mPopupDlg.dismiss();
 
 //            ConsultingPopUpActivity.this.finish();
+            checkFinalPage();
             ViewManager.getInstance().removeActivity(ConsultingPopUpActivity.this);
         }
     };
 
+    private void checkFinalPage(){
+        int currentActivityIdx = ViewManager.getInstance().getCurrentActivityIdx();
+
+        if(currentActivityIdx == 0){
+
+            Log.d(_TAG, "앱이 종료되어야 함");
+            Toast toast = Toast.makeText(this, "컨설팅 서비스를 종료합니다", Toast.LENGTH_LONG);
+            toast.show();
+
+            moveTaskToBack(true);
+
+            Intent i = new Intent(IntentAction.SEND_NOTI_FROM_CONSULTING);
+            i.putExtra("consultingState", "exit");
+            Log.d(_TAG, "send broadcast exit extra to M.C");
+            sendBroadcast(i);
+
+        }else if(currentActivityIdx > 0){
+            //nothing to do
+        }else{
+            Log.d(_TAG, "current index is ackward : "+currentActivityIdx);
+        }
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event){
@@ -88,12 +114,14 @@ public class ConsultingPopUpActivity extends Activity {
                     sendBroadcast(intent_to_mc);
 
                    // ConsultingPopUpActivity.this.finish();
+                    checkFinalPage();
                     ViewManager.getInstance().removeActivity(ConsultingPopUpActivity.this);
 
                 }else { // rightButtonEventListener = CANCEL
                     mPopupDlg.dismiss();
 
                 //    ConsultingPopUpActivity.this.finish();
+                    checkFinalPage();
                     ViewManager.getInstance().removeActivity(ConsultingPopUpActivity.this);
                 }
                 break;
@@ -117,6 +145,7 @@ public class ConsultingPopUpActivity extends Activity {
                 mPopupDlg.dismiss();
 
               //  ConsultingPopUpActivity.this.finish();
+                checkFinalPage();
                 ViewManager.getInstance().removeActivity(ConsultingPopUpActivity.this);
             default:
                 break;

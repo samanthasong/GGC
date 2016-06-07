@@ -89,6 +89,28 @@ public class UserRegisterActivity extends Activity {
         }
     }
 
+    private void checkFinalPage(){
+        int currentActivityIdx = ViewManager.getInstance().getCurrentActivityIdx();
+
+        if(currentActivityIdx == 0){
+
+            Log.d(_TAG, "앱이 종료되어야 함");
+            Toast toast = Toast.makeText(this, "컨설팅 서비스를 종료합니다", Toast.LENGTH_LONG);
+            toast.show();
+
+            moveTaskToBack(true);
+
+            Intent i = new Intent(IntentAction.SEND_NOTI_FROM_CONSULTING);
+            i.putExtra("consultingState", "exit");
+            Log.d(_TAG, "send broadcast exit extra to M.C");
+            sendBroadcast(i);
+
+        }else if(currentActivityIdx > 0){
+            //nothing to do
+        }else{
+            Log.d(_TAG, "current index is ackward : "+currentActivityIdx);
+        }
+    }
     public void onClickRegister(View v) {
 
         ProgressBar progressBar = (ProgressBar)findViewById(R.id.loading_bar);
@@ -122,6 +144,7 @@ public class UserRegisterActivity extends Activity {
                     progressBar.setVisibility(View.INVISIBLE);
 
                     //UserRegisterActivity.this.finish();
+                    checkFinalPage();
                     ViewManager.getInstance().removeActivity(UserRegisterActivity.this);
 
                     break;

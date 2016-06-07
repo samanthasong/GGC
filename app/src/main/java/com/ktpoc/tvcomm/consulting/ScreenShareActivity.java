@@ -14,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 
 
@@ -56,13 +57,34 @@ public class ScreenShareActivity extends Activity {
 
     }
 
+    private void checkFinalPage(){
+        int currentActivityIdx = ViewManager.getInstance().getCurrentActivityIdx();
 
+        if(currentActivityIdx == 0){
+
+            Log.d(_TAG, "앱이 종료되어야 함");
+            Toast toast = Toast.makeText(this, "컨설팅 서비스를 종료합니다", Toast.LENGTH_LONG);
+            toast.show();
+
+            moveTaskToBack(true);
+
+            Intent i = new Intent(IntentAction.SEND_NOTI_FROM_CONSULTING);
+            i.putExtra("consultingState", "exit");
+            Log.d(_TAG, "send broadcast exit extra to M.C");
+            sendBroadcast(i);
+
+        }else if(currentActivityIdx > 0){
+            //nothing to do
+        }else{
+            Log.d(_TAG, "current index is ackward : "+currentActivityIdx);
+        }
+    }
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if(intent.getAction().equals(IntentAction.DISCONNECT_FROM_CONSULTING)){
-                ScreenShareActivity.this.finish();
+                checkFinalPage();
                 ViewManager.getInstance().removeActivity(ScreenShareActivity.this);
             }
         }
@@ -73,6 +95,7 @@ public class ScreenShareActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ViewManager.getInstance().addActivity(this);
         ViewManager.getInstance().addActivity(this);
         ViewManager.getInstance().printActivityListSofar();
 
@@ -139,7 +162,7 @@ public class ScreenShareActivity extends Activity {
     public boolean onKeyDown(int keyCode, KeyEvent event){
         switch (keyCode){
             case KeyEvent.KEYCODE_BACK:
-                //this.finish();
+                checkFinalPage();
                 ViewManager.getInstance().removeActivity(ScreenShareActivity.this);
                 Log.d(_TAG, "BACK KEY PRESSED");
 
